@@ -50,7 +50,7 @@ When it comes to deciding whether to use SSL/TLS, here are the relevant lines of
        strcmp(svc->probe_matched, "dtls") != 0))
     return 0; // Not SSL
 ```
-What does this mean? It retries with SSL/TLS if the match string includes ssl or dtls.
+What does this mean? It retries with SSL/TLS if the matched service was ssl or dtls.
 - If you want to check SSL/TLS, be sure to include ssl or dtls as a service
 - If you don't want to check SSL/TLS, avoid including ssl or dtls as a service
   - This is particularly useful for identifying unencrypted variants of services (e.g. FTP, Telnet, SMTP/POP3/IMAP)
