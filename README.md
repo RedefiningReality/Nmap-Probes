@@ -1,7 +1,7 @@
 # Nmap Service Probes and Generator
 Increase service scanning efficiency with custom Nmap service probes.
 #### tl;dr
-- [The Solution](#The%20Solution)
+- [The Solution](#The-Solution)
 - [Examples](#Examples)
 ## The Problem
 - In large environments, there isn't enough time to fully test every service
