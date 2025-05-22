@@ -31,7 +31,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
      - If specifying probes, include the following probes: `SSLSessionReq`, `TLSSessionReq`, (optional - detects SSLv2-only servers) `SSLv23SessionReq`
    - You'll want to include service `tcpwrapped` (service didn't respond) in most cases
    - You'll want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
-6. `sudo nmap -Pn -sS -p- -sV --versiondb custom-probes ...`
+6. `sudo nmap -sS -p- -sV --versiondb custom-probes ...`
 ### Background
 - Understand how Nmap version scanning works: [https://nmap.org/book/vscan-technique.html](https://nmap.org/book/vscan-technique.html)
 - Understand how to work with nmap-service-probes: [https://nmap.org/book/vscan-fileformat.html](https://nmap.org/book/vscan-fileformat.html)
