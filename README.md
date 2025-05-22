@@ -8,7 +8,7 @@ Increase service scanning efficiency with custom Nmap service probes.
   - So, you look for services with common vulnerabilities or misconfigurations
 - These services can live on non-default ports
   - When they do, they often get overlooked, making them more likely to be affected (excellent targets)
-- **There's no efficient way to identify services on non-default ports**
+- **_There's no efficient way to identify services on non-default ports_**
   - Running a basic port scan won't tell you the service on that port
   - Nmap's `-sV` flag correctly identifies the service but with too much overhead:
     - Lots of extra traffic (probes) to identify services you probably don't care about
