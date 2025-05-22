@@ -22,7 +22,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
    - For a full list of services: `egrep '^match |^softmatch ' nmap-service-probes | cut -d' ' -f2 | sort -u`
 4. (optional) Identify probes (traffic) you want to send.
    - For a full list of probes: `grep -i '^probe ' nmap-service-probes | cut -d' ' -f3 | sort -u`
-   - For a list of probes that could help identify a service (probe section contains match/softmatch <service>): `python3 parse-probes.py <service>`
+   - For a list of probes associated with a particular service: `python3 parse-probes.py <service>`
 5. Generate a custom nmap-services-probes file: `python generate-probes.py ... -o custom-probes`
    - If your only goal is to identify the service type, and you don't care about its version, be sure to include `--no-softmatch`
    - If you don't specify probes, the generate-probes.py script will include all probes that could help identify the service (containing match/softmatch <service>)
