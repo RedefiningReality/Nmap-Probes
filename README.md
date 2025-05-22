@@ -65,7 +65,7 @@ What does this mean? It retries with SSL/TLS if the matched service was ssl or d
 - `<service>` (required) ⇒ service to extract probes for
 - `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)
 
-[generate-probes.py](generate-probes.py) ⇒ filtering an nmap-service-probes file so that it only includes relevant lines
+[generate-probes.py](generate-probes.py) ⇒ filter an nmap-service-probes file so that it only includes relevant lines
 - `<services>` (required) ⇒ services to include (e.g., http ftp ssh ssl ssl/http tcpwrapped)
   - Don't forget to add `tcpwrapped`
 - `-p <probes>` ⇒ probes to include (e.g. NULL GenericLines GetRequest)
