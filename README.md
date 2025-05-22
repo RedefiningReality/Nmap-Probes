@@ -84,7 +84,7 @@ wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-
 python generate-probes.py \
   tcpwrapped ssl http http-proxy ssl/http ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
   -p NULL GenericLines GetRequest SSLSessionReq TLSSessionReq SSLv23SessionReq \
-  -m
+  --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA common --open
 ```
 #### Web (HTTP/HTTPS) Services - Get Service Version
@@ -106,6 +106,6 @@ gowitness report server
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   tcpwrapped ftp ftp-proxy smtp smtp-proxy pop3 pop3-proxy pop3pw imap imap-proxy ssh telnet telnet-proxy vnc nuuo-vnc vnc-http \
-  -m
+  --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA unencrypted --open
 ```
