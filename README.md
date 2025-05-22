@@ -78,22 +78,22 @@ What does this mean? It retries with SSL/TLS if the matched service was ssl or d
 - `-o <output>` ⇒ path to output nmap-service-probes file (default: `nmap-service-probes` in current directory - will overwrite original)
 ### Examples
 The title of this section is "Examples" not "Best Examples" so modify/use at your discretion.
-#### Common Vulnerable Services - Get Service Type
+#### Common Vulnerable Services - Get Service Version
 ```bash
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   tcpwrapped ssl http http-proxy ssl/http ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
-  -p NULL GenericLines GetRequest SSLSessionReq TLSSessionReq SSLv23SessionReq \
-  --no-softmatch
+  -p NULL GenericLines GetRequest SSLSessionReq TLSSessionReq SSLv23SessionReq
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA common --open
 ```
-#### Web (HTTP/HTTPS) Services - Get Service Version
+#### Web (HTTP/HTTPS) Services - Screenshot
 ```bash
 # efficiently identify web services
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   tcpwrapped ssl http http-proxy ssl/http \
-  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLSessionReq TLSSessionReq
+  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLSessionReq TLSSessionReq \
+  --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
 
 # screenshot with gowitness
