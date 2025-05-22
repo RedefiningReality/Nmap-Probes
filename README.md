@@ -62,7 +62,7 @@ What does this mean? It retries with SSL/TLS if the match string includes ssl or
 ## Usage
 [parse-probes.py](parse-probes.py) ⇒ extract probes used to identify a particular service from nmap-service-probes
 - `<service>` (required) ⇒ service to extract probes for
-- `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)
+- `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)  
 [generate-probes.py](generate-probes.py) ⇒ filtering an nmap-service-probes file so that it only includes relevant lines
 - `<services>` (required) ⇒ services to include (e.g., http ftp ssh ssl ssl/http tcpwrapped)
   - Don't forget to add `tcpwrapped`
