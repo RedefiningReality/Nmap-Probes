@@ -55,12 +55,12 @@ What does this mean? It retries with SSL/TLS if the matched service was ssl or d
 - If you don't want to check SSL/TLS, avoid including ssl or dtls as a service
   - This is particularly useful for identifying unencrypted variants of services (e.g. FTP, Telnet, SMTP/POP3/IMAP)
 ### Limitations
-- Nmap does the scan in 2 steps: 1. Identify open ports, 2. Scan services to determine their version
+- Nmap does the scan in 2 steps: 1. Identify open ports, 2. Scan services to determine their version.
   - This means that open ports go through the TCP handshake twice. Ideally, this should be combined into a single step.
 - You're forced to scan the same ports on every host. I really wish you could provide a hosts file containing ports to scan per host.
-- Certain aspects of version scanning, like rarity, timeout values, fallback, etc. can't be modified with the generate-probes.py script
+- Certain aspects of version scanning, like rarity, timeout values, fallback, etc. can't be modified with the generate-probes.py script.
   - This should be easy to change manually though if you know what you're doing, and in most cases you won't care to
-## Usage
+## Usage.
 [parse-probes.py](parse-probes.py) ⇒ extract probes used to identify a particular service from nmap-service-probes
 - `<service>` (required) ⇒ service to extract probes for
 - `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)
