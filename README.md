@@ -25,7 +25,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
    - For a list of probes associated with a particular service: `python3 parse-probes.py <service>`
 5. Generate a custom nmap-services-probes file: `python generate-probes.py ... -o custom-probes`
    - If your only goal is to identify the service type, and you don't care about its version, be sure to include `--no-softmatch`
-   - If you don't specify probes, the generate-probes.py script will include all probes that could help identify the service (containing match/softmatch <service>)
+   - If you don't specify probes, the script will include all probes that could help identify the service (containing match/softmatch <service>)
    - For TLS/SSL variations,
      - Include the following services: `ssl` and `ssl/<service>` for TCP (or `dtls` for UDP) - see Background section below
      - If specifying probes, include the following probes: `SSLSessionReq`, `TLSSessionReq`, (optional - detects SSLv2-only servers) `SSLv23SessionReq`
