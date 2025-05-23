@@ -28,7 +28,10 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
    - If you don't specify probes, the script will include all probes that could help identify the service (containing `match/softmatch <service>`)
    - For TLS/SSL variations,
      - The script will automatically include the following services: `ssl` and `ssl/<service>`
-     - The script will automatically include the following probes: `SSLSessionReq`, `TLSSessionReq`, `SSLv23SessionReq`
+     - The script will automatically include the following probes: `SSLSessionReq` and `TLSSessionReq`
+     - Probe `SSLv23SessionReq` is used to detect SSLv2-only services, making it rarely worth the overhead
+       - If probes _are not_ explicitly specified (no `-p`) and `--no-ssl` is _not_ set, the script will automatically include this probe. You may exclude it with `-e SSLv23SessionReq`
+       - If probes _are_ explicitly specified (`-p`), the script will _not_ include this probe unless it is explicitly listed
    - To avoid TLS/SSL altogether, you may include the `--no-ssl` flag. This will omit the above services/probes and remove all `sslports` directives.
      - If you include `--no-ssl`, you may still explicitly include SSL/TLS services or SSL/TLS probes (with `-p`). However, the `sslports` directive will still be removed.
    - You'll want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
@@ -53,6 +56,8 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
   - Don't forget to add `NULL`
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
   - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included
+- `-e <exclude probes>` ⇒ probes to exclude (takes precedence over `-p`)
+  - For example, `-e SSLv23SessionReq` will remove detection of SSLv2-only services
 - `-s` (or `--no-ssl`) ⇒ don't attempt SSL/TLS connections
   - Useful for identifying unencrypted services
 - `-m` (or `--no-softmatch`) ⇒ convert all instances of "softmatch" to "match" so that scanning stops once a service type is identified
@@ -66,7 +71,7 @@ The title of this section is "Examples" not "Best Examples" so modify/use at you
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
-  -p NULL GenericLines GetRequest SSLSessionReq TLSSessionReq SSLv23SessionReq
+  -p NULL GenericLines GetRequest SSLv23SessionReq
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA common --open
 ```
 #### Web (HTTP/HTTPS) Services - Screenshot
@@ -75,7 +80,7 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   tcpwrapped http http-proxy \
-  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLSessionReq TLSSessionReq \
+  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest \
   --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
 
