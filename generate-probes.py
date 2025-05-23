@@ -4,10 +4,10 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Filter Nmap probes by service and optionally probe name.")
-    parser.add_argument("services", nargs="+", help="Service names to include (e.g., http ftp ssh)")
-    parser.add_argument("-p", "--probes", nargs="*", help="List of probe names to include (optional)")
-    parser.add_argument("-e", "--exclude-probes", nargs="*", help="List of probe names to exclude (optional)")
-    parser.add_argument("-s", "--no-ssl", action="store_true", help="Don't attempt SSL/TLS connections")
+    parser.add_argument("-s", "--services", nargs="+", help="Service names to include (e.g., http ftp ssh)")
+    parser.add_argument("-p", "--probes", nargs="+", help="List of probe names to include (optional)")
+    parser.add_argument("-e", "--exclude-probes", nargs="+", help="List of probe names to exclude (optional)")
+    parser.add_argument("-n", "--no-ssl", action="store_true", help="Don't attempt SSL/TLS connections")
     parser.add_argument("-m", "--no-softmatch", action="store_true", help="Convert 'softmatch' to 'match'")
     parser.add_argument("-f", "--probes-file", default="nmap-service-probes", help="Input file path")
     parser.add_argument("-o", "--output", default="nmap-service-probes", help="Output file path")
@@ -15,7 +15,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    services = set(args.services)
+    services = set(args.services) if args.services else {"*"}
     ssl_probes = {"SSLSessionReq", "TLSSessionReq"}
 
     allowed_probes = set(args.probes) if args.probes else None
@@ -28,7 +28,7 @@ def main():
             return probe in allowed_probes or (not args.no_ssl and probe in ssl_probes)
         return not args.no_ssl or (probe not in ssl_probes and probe != "SSLv23SessionReq")
 
-    with open(args.probes_file, "r") as f:
+    with open(args.probes_file, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
     output, section = [], []
@@ -57,7 +57,7 @@ def main():
         directive, service = parts[0], parts[1] if len(parts) > 1 else ""
 
         if directive in {"match", "softmatch"}:
-            if service in services or service == "tcpwrapped" or (
+            if service in services or "*" in services or service == "tcpwrapped" or (
                 not args.no_ssl and (service == "ssl" or service.startswith("ssl/") and service[4:] in services)
             ):
                 if args.no_softmatch and directive == "softmatch":
