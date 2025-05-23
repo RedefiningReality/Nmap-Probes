@@ -72,8 +72,13 @@ The title of this section is "Examples" not "Best Examples" so modify/use at you
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
-  -p NULL GenericLines GetRequest SSLv23SessionReq
-sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA common --open
+  -p NULL GenericLines GetRequest
+
+# --version-all ensures all the probes above are tried on every port
+# It's not necessary here (default scan intensity is 7 and rarity < 7 for all the above probes)
+# However, I included it to encourage reading up on --version-intensity <intensity>, --version-light, and --version-all
+# If you're already explicitly specifying probes to reduce overhead, including --version-all could be a good habit to get into
+sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes --version-all -iL targets.txt -oA common --open
 ```
 #### Web (HTTP/HTTPS) Services - Screenshot
 ```bash
@@ -81,8 +86,12 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   tcpwrapped http http-proxy \
-  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest \
+  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLv23SessionReq \
   --no-softmatch
+
+# Here I explicitly included SSLv23SessionReq to test SSLv2-only services
+# However, since its rarity is 8 > default scan intensity of 7, it will only probe common web ports (specified in the ports directive)
+# Probes SSLSessionReq and TLSSessionReq will be attempted on all ports because their rarity is 1 < default scan intensity of 7
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
 
 # screenshot with gowitness
