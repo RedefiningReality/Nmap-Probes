@@ -77,6 +77,7 @@ python generate-probes.py \
 # --version-all ensures all the probes above are tried on every port
 # It's not necessary here (default scan intensity is 7 and rarity < 7 for all the above probes)
 # However, I included it to encourage reading up on --version-intensity <intensity>, --version-light, and --version-all
+# https://nmap.org/book/vscan-technique.html
 # If you're already explicitly specifying probes to reduce overhead, including --version-all could be a good habit to get into
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes --version-all -iL targets.txt -oA common --open
 ```
