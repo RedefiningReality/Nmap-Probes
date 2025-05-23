@@ -57,7 +57,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
 - `-p <probes>` ⇒ probes to include (e.g. GenericLines GetRequest)
   - Don't forget to include `NULL`
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
-  - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included
+  - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included. Probes not associated with an included service will be omitted.
 - `-e <exclude probes>` ⇒ probes to exclude
   - Takes precedence over everything else, including `-p` and automatic inclusion of SSL/TLS ports
   - For example, `-e SSLv23SessionReq` will remove detection of SSLv2-only services
