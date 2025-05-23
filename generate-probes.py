@@ -5,27 +5,28 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="Filter Nmap probes by service and optionally probe name.")
     parser.add_argument("services", nargs="+", help="Service names to include (e.g., http ftp ssh)")
+    parser.add_argument("-p", "--probes", nargs="*", help="List of probe names to include (optional)")
+    parser.add_argument("-e", "--exclude-probes", nargs="*", help="List of probe names to exclude (optional)")
+    parser.add_argument("-s", "--no-ssl", action="store_true", help="Don't attempt SSL/TLS connections")
+    parser.add_argument("-m", "--no-softmatch", action="store_true", help="Convert 'softmatch' to 'match'")
     parser.add_argument("-f", "--probes-file", default="nmap-service-probes", help="Input file path")
     parser.add_argument("-o", "--output", default="nmap-service-probes", help="Output file path")
-    parser.add_argument("-m", "--no-softmatch", action="store_true", help="Convert 'softmatch' to 'match'")
-    parser.add_argument("-s", "--no-ssl", action="store_true", help="Don't attempt SSL/TLS connections")
-    parser.add_argument("-p", "--probes", nargs="*", help="List of probe names to include (optional)")
     return parser.parse_args()
 
 def main():
     args = parse_args()
     services = set(args.services)
-    ssl_probes = {"SSLSessionReq", "TLSSessionReq", "SSLv23SessionReq"}
+    ssl_probes = {"SSLSessionReq", "TLSSessionReq"}
 
-    # Probes explicitly allowed
     allowed_probes = set(args.probes) if args.probes else None
+    exclude_probes = set(args.exclude_probes) if args.exclude_probes else None
 
     def should_include_probe(probe, match_found):      
-        if not match_found:
+        if not match_found or (exclude_probes and probe in exclude_probes):
             return False
         if allowed_probes:
             return probe in allowed_probes or (not args.no_ssl and probe in ssl_probes)
-        return not args.no_ssl or probe not in ssl_probes
+        return not args.no_ssl or (probe not in ssl_probes and probe != "SSLv23SessionReq")
 
     with open(args.probes_file, "r") as f:
         lines = f.readlines()
