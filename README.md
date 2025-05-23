@@ -51,7 +51,9 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
 - `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)
 
 [generate-probes.py](generate-probes.py) ⇒ filter an nmap-service-probes file so that it only includes relevant lines
-- `<services>` (required) ⇒ services to include (e.g., http ftp ssh)
+- `-s <services>` ⇒ services to include (e.g., http ftp ssh)
+  - If specified, ONLY these services will be included
+  - If not specified, all services will be included. This is useful if you want to limit probes but not service detection.
 - `-p <probes>` ⇒ probes to include (e.g. GenericLines GetRequest)
   - Don't forget to include `NULL`
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
@@ -59,7 +61,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
 - `-e <exclude probes>` ⇒ probes to exclude
   - Takes precedence over everything else, including `-p` and automatic inclusion of SSL/TLS ports
   - For example, `-e SSLv23SessionReq` will remove detection of SSLv2-only services
-- `-s` (or `--no-ssl`) ⇒ don't attempt SSL/TLS connections
+- `-n` (or `--no-ssl`) ⇒ don't attempt SSL/TLS connections
   - Useful for identifying unencrypted services
 - `-m` (or `--no-softmatch`) ⇒ convert all instances of "softmatch" to "match" so that scanning stops once a service type is identified
   - Useful if you don't care about the service's version
@@ -71,7 +73,7 @@ The title of this section is "Examples" not "Best Examples" so modify/use at you
 ```bash
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
+  -s http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
   -p NULL GenericLines GetRequest
 
 # --version-all ensures all the probes above are tried on every port
@@ -86,7 +88,7 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes --version-all -iL t
 # efficiently identify web services
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  http http-proxy \
+  -s http http-proxy \
   -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLv23SessionReq \
   --no-softmatch
 
@@ -105,7 +107,7 @@ gowitness report server
 ```bash
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  ftp ftp-proxy smtp smtp-proxy pop3 pop3-proxy pop3pw imap imap-proxy ssh telnet telnet-proxy vnc nuuo-vnc vnc-http \
+  -s ftp ftp-proxy smtp smtp-proxy pop3 pop3-proxy pop3pw imap imap-proxy ssh telnet telnet-proxy vnc nuuo-vnc vnc-http \
   --no-ssl
   --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA unencrypted --open
