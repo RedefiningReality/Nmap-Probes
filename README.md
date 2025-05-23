@@ -34,7 +34,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
        - If probes _are_ explicitly specified (`-p`), the script will _not_ include this probe unless it is explicitly listed
    - To avoid TLS/SSL altogether, you may include the `--no-ssl` flag. This will omit the above services/probes and remove all `sslports` directives.
      - If you include `--no-ssl`, you may still explicitly include SSL/TLS services or SSL/TLS probes (with `-p`). However, the `sslports` directive will still be removed.
-   - You'll want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
+   - The NULL probe (`NULL`) is included by default. This just grabs the service banner without sending any data. You may exclude it with `-e NULL`
 6. `sudo nmap -sS -p- -sV --versiondb custom-probes ...`
 ### Background
 - Understand how Nmap version scanning works: [https://nmap.org/book/vscan-technique.html](https://nmap.org/book/vscan-technique.html)
@@ -52,8 +52,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
 
 [generate-probes.py](generate-probes.py) ⇒ filter an nmap-service-probes file so that it only includes relevant lines
 - `<services>` (required) ⇒ services to include (e.g., http ftp ssh)
-- `-p <probes>` ⇒ probes to include (e.g. NULL GenericLines GetRequest)
-  - Don't forget to add `NULL`
+- `-p <probes>` ⇒ probes to include (e.g. GenericLines GetRequest)
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
   - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included
 - `-e <exclude probes>` ⇒ probes to exclude
@@ -72,7 +71,7 @@ The title of this section is "Examples" not "Best Examples" so modify/use at you
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
   http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
-  -p NULL GenericLines GetRequest
+  -p GenericLines GetRequest
 
 # --version-all ensures all the probes above are tried on every port
 # It's not necessary here (default scan intensity is 7 and rarity < 7 for all the above probes)
@@ -86,8 +85,8 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes --version-all -iL t
 # efficiently identify web services
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  tcpwrapped http http-proxy \
-  -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLv23SessionReq \
+  http http-proxy \
+  -p GenericLines GetRequest HTTPOptions FourOhFourRequest SSLv23SessionReq \
   --no-softmatch
 
 # Here I explicitly included SSLv23SessionReq to test SSLv2-only services
