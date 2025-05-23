@@ -97,11 +97,14 @@ python generate-probes.py \
 # However, since its rarity is 8 > default scan intensity of 7, it will only probe common web ports (specified in the ports directive)
 # Probes SSLSessionReq and TLSSessionReq were explicitly included and will be attempted on all ports because their rarity is 1 < default scan intensity of 7
 # To only scan HTTP (not HTTPS) services, I would include --no-ssl and remove SSLv23SessionReq in the command above
-sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
+sudo nmap -n -Pn --min-hostgroup 128 -sS -p- --max-retries 0 -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
+
+# remove irrelevant Windows services
+grep -v 'Microsoft HTTPAPI httpd' web.xml > web-clean.xml
 
 # screenshot with gowitness
 go install github.com/sensepost/gowitness@latest
-gowitness scan nmap --open-only --service-contains http -f web.xml --write-db
+gowitness scan nmap --open-only --service-contains http -f web-clean.xml --write-db
 gowitness report server
 ```
 #### Services Supporting Unencrypted Connections - Get Service Type
