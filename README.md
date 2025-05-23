@@ -90,7 +90,6 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes --version-all -iL t
 # efficiently identify web services
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  -s http http-proxy \
   -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLv23SessionReq \
   --no-softmatch
 
