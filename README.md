@@ -34,7 +34,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
        - If probes _are_ explicitly specified (`-p`), the script will _not_ include this probe unless it is explicitly listed
    - To avoid TLS/SSL altogether, you may include the `--no-ssl` flag. This will omit the above services/probes and remove all `sslports` directives.
      - If you include `--no-ssl`, you may still explicitly include SSL/TLS services or SSL/TLS probes (with `-p`). However, the `sslports` directive will still be removed.
-   - You'll likely want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
+   - You'll want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
 6. `sudo nmap -sS -p- -sV --versiondb custom-probes ...`
 ### Background
 - Understand how Nmap version scanning works: [https://nmap.org/book/vscan-technique.html](https://nmap.org/book/vscan-technique.html)
