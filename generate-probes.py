@@ -4,9 +4,9 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Filter Nmap probes by service and optionally probe name.")
-    parser.add_argument("-s", "--services", nargs="+", help="Service names to include (e.g., http ftp ssh)")
-    parser.add_argument("-p", "--probes", nargs="+", help="List of probe names to include (optional)")
-    parser.add_argument("-e", "--exclude-probes", nargs="+", help="List of probe names to exclude (optional)")
+    parser.add_argument("-s", "--services", nargs="+", help="Services to include (default: all)")
+    parser.add_argument("-p", "--probes", nargs="+", help="Probes to include (default: all)")
+    parser.add_argument("-e", "--exclude-probes", nargs="+", help="Probes to exclude (optional)")
     parser.add_argument("-n", "--no-ssl", action="store_true", help="Don't attempt SSL/TLS connections")
     parser.add_argument("-m", "--no-softmatch", action="store_true", help="Convert 'softmatch' to 'match'")
     parser.add_argument("-f", "--probes-file", default="nmap-service-probes", help="Input file path")
