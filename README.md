@@ -69,7 +69,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
 - `-o <output>` ⇒ path to output nmap-service-probes file (default: `nmap-service-probes` in current directory - will overwrite original)
 ### Examples
 The title of this section is "Examples" not "Best Examples" so modify/use at your discretion.  
-It may be helpful to exclude `-s` entirely and only limit probes. This way you avoid sending unnecessary probes after matching another service.
+It may be helpful to exclude `-s` entirely and only limit probes. This way you avoid sending unnecessary probes after matching a different service.
 I'm not sure if the benefit of sending fewer probes would outweigh the overhead introduced by extra match checks and will have to do more testing.
 #### Common Vulnerable Services - Get Service Version
 ```bash
