@@ -30,7 +30,7 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
      - The script will automatically include the following services: `ssl` and `ssl/<service>`
      - The script will automatically include the following probes: `SSLSessionReq` and `TLSSessionReq`
      - Probe `SSLv23SessionReq` is used to detect SSLv2-only services, making it rarely worth the overhead
-       - If probes _are not_ explicitly specified (no `-p`) and `--no-ssl` is _not_ set, the script will automatically include this probe. You may exclude it with `-e SSLv23SessionReq`
+       - If probes are _not_ explicitly specified (no `-p`) and `--no-ssl` is _not_ set, the script will automatically include this probe. You may exclude it with `-e SSLv23SessionReq`
        - If probes _are_ explicitly specified (`-p`), the script will _not_ include this probe unless it is explicitly listed
    - To avoid TLS/SSL altogether, you may include the `--no-ssl` flag. This will omit the above services/probes and remove all `sslports` directives.
      - If you include `--no-ssl`, you may still explicitly include SSL/TLS services or SSL/TLS probes (with `-p`). However, the `sslports` directive will still be removed.
@@ -56,7 +56,8 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
   - Don't forget to add `NULL`
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
   - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included
-- `-e <exclude probes>` ⇒ probes to exclude (takes precedence over `-p`)
+- `-e <exclude probes>` ⇒ probes to exclude
+  - Takes precedence over everything else, including `-p` and automatic inclusion of SSL/TLS ports
   - For example, `-e SSLv23SessionReq` will remove detection of SSLv2-only services
 - `-s` (or `--no-ssl`) ⇒ don't attempt SSL/TLS connections
   - Useful for identifying unencrypted services
