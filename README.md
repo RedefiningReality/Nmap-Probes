@@ -27,33 +27,14 @@ Tell Nmap to only look for a particular service/services. You can do this by fil
    - If your only goal is to identify the service type, and you don't care about its version, be sure to include `--no-softmatch`
    - If you don't specify probes, the script will include all probes that could help identify the service (containing `match/softmatch <service>`)
    - For TLS/SSL variations,
-     - Include the following services: `ssl` and `ssl/<service>` for TCP (or `dtls` for UDP) - see Background section below
-     - If specifying probes, include the following probes: `SSLSessionReq`, `TLSSessionReq`, (optional - detects SSLv2-only servers) `SSLv23SessionReq`
-   - You'll want to include service `tcpwrapped` (service didn't respond) in most cases
+     - The script will automatically include the following services: `ssl` and `ssl/<service>`
+     - The script will automatically include the following probes: `SSLSessionReq`, `TLSSessionReq`, `SSLv23SessionReq`
+   - To avoid TLS/SSL altogether, you may include the `--no-ssl` flag. This will omit the above services/probes and remove all `sslports` directives.
    - You'll want to include the NULL probe (`NULL`) in most cases. This just grabs the service banner without sending any data.
 6. `sudo nmap -sS -p- -sV --versiondb custom-probes ...`
 ### Background
 - Understand how Nmap version scanning works: [https://nmap.org/book/vscan-technique.html](https://nmap.org/book/vscan-technique.html)
 - Understand how to work with nmap-service-probes: [https://nmap.org/book/vscan-fileformat.html](https://nmap.org/book/vscan-fileformat.html)
-
-When it comes to deciding whether to use SSL/TLS, here are the relevant lines of [service_scan.cc](https://github.com/nmap/nmap/blob/master/service_scan.cc) in Nmap's source code:
-```c++
-  if (svc->probe_matched && strncmp(svc->probe_matched, "ssl/", 4) == 0) {
-    /* The service has been detected without having to make an SSL connection */
-    svc->tunnel = SERVICE_TUNNEL_SSL;
-    svc->probe_matched += 4;
-    return 0;
-  }
-...
-  if (!svc->probe_matched ||
-      (strcmp(svc->probe_matched, "ssl") != 0 &&
-       strcmp(svc->probe_matched, "dtls") != 0))
-    return 0; // Not SSL
-```
-What does this mean? It retries with SSL/TLS if the matched service was ssl or dtls.
-- If you want to check SSL/TLS, be sure to include ssl or dtls as a service
-- If you don't want to check SSL/TLS, avoid including ssl or dtls as a service
-  - This is particularly useful for identifying unencrypted variants of services (e.g. FTP, Telnet, SMTP/POP3/IMAP)
 ### Limitations
 - Nmap does the scan in 2 steps: 1. Identify open ports, 2. Scan services to determine their version.
   - This means that open ports go through the TCP handshake twice. Ideally, this should be combined into a single step.
@@ -66,12 +47,13 @@ What does this mean? It retries with SSL/TLS if the matched service was ssl or d
 - `-f <probes file>` ⇒ path to nmap-service-probes file (default: `nmap-service-probes` in current directory)
 
 [generate-probes.py](generate-probes.py) ⇒ filter an nmap-service-probes file so that it only includes relevant lines
-- `<services>` (required) ⇒ services to include (e.g., http ftp ssh ssl ssl/http tcpwrapped)
-  - Don't forget to add `tcpwrapped`
+- `<services>` (required) ⇒ services to include (e.g., http ftp ssh)
 - `-p <probes>` ⇒ probes to include (e.g. NULL GenericLines GetRequest)
   - Don't forget to add `NULL`
   - If specified, ONLY these probes will be included and only if they would help identify a service (contain `match/softmatch <service>`)
   - If not specified, all probes that could help identify a service (contain `match/softmatch <service>`) will be included
+- `-s` (or `--no-ssl`) ⇒ don't attempt SSL/TLS connections
+  - Useful for identifying unencrypted services
 - `-m` (or `--no-softmatch`) ⇒ convert all instances of "softmatch" to "match" so that scanning stops once a service type is identified
   - Useful if you don't care about the service's version
 - `-f <probes file>` ⇒ path to original nmap-service-probes file (default: `nmap-service-probes` in current directory)
@@ -82,7 +64,7 @@ The title of this section is "Examples" not "Best Examples" so modify/use at you
 ```bash
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  tcpwrapped ssl http http-proxy ssl/http ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
+  http http-proxy ftp ftp-proxy smtp smtp-proxy ssh telnet telnet-proxy vnc vnc-http cisco-smartinstall \
   -p NULL GenericLines GetRequest SSLSessionReq TLSSessionReq SSLv23SessionReq
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA common --open
 ```
@@ -91,7 +73,7 @@ sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA
 # efficiently identify web services
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  tcpwrapped ssl http http-proxy ssl/http \
+  tcpwrapped http http-proxy \
   -p NULL GenericLines GetRequest HTTPOptions FourOhFourRequest SSLSessionReq TLSSessionReq \
   --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
@@ -105,7 +87,8 @@ gowitness report server
 ```bash
 wget https://raw.githubusercontent.com/nmap/nmap/refs/heads/master/nmap-service-probes
 python generate-probes.py \
-  tcpwrapped ftp ftp-proxy smtp smtp-proxy pop3 pop3-proxy pop3pw imap imap-proxy ssh telnet telnet-proxy vnc nuuo-vnc vnc-http \
+  ftp ftp-proxy smtp smtp-proxy pop3 pop3-proxy pop3pw imap imap-proxy ssh telnet telnet-proxy vnc nuuo-vnc vnc-http \
+  --no-ssl
   --no-softmatch
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA unencrypted --open
 ```
