@@ -91,7 +91,8 @@ python generate-probes.py \
 
 # Here I explicitly included SSLv23SessionReq to test SSLv2-only services
 # However, since its rarity is 8 > default scan intensity of 7, it will only probe common web ports (specified in the ports directive)
-# Probes SSLSessionReq and TLSSessionReq will be attempted on all ports because their rarity is 1 < default scan intensity of 7
+# Probes SSLSessionReq and TLSSessionReq were explicitly included and will be attempted on all ports because their rarity is 1 < default scan intensity of 7
+# To only scan HTTP (not HTTPS) services, I would include --no-ssl and remove SSLv23SessionReq in the command above
 sudo nmap -n -Pn -sS -p- -sV --versiondb nmap-service-probes -iL targets.txt -oA web --open
 
 # screenshot with gowitness
